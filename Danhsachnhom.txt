@@ -1,0 +1,7 @@
+﻿NHÓM  5:
+STT	Họ và tên				MSSV		Email
+1	Nguyễn Trung Trực ( nhóm trưởng )	14022271	nguyentrungtruc39@gmail.com
+2	Phạm Minh Tuấn				14035971	
+3	Mang Châu Triệu				14022391
+4	Lê Văn Vượng				14020761
+
