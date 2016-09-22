@@ -1,0 +1,2 @@
+﻿# Xây dựng ứng dụng quản lý công việc
+-Ứng dụng hỗ trợ người dùng tổ chức thêm,sắp xếp,cập nhật công việc, chia sẻ công việc giửa các thành viên trong nhóm...vv,có thể thông báo qua mail hay qua lịch và báo thức trên điện thoại.
