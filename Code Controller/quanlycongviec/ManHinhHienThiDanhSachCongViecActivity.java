@@ -2,7 +2,6 @@ package vn.edu.android.quanlycongviec;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,15 +17,17 @@ import vn.edu.android.adapter.CongViecAdapter;
 import vn.edu.android.database.DatabaseHandler;
 import vn.edu.android.model.CongViec;
 
-public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity {
+
+    public static final long NEW_NOTE = -1;
+    public static final String ID = "ID";
+    private CongViec cv;
 
     ListView lvCongViec;
     List<CongViec> list;
     CongViecAdapter adapterCongViec;
     DatabaseHandler db;
     ImageButton btnThemCV;
-    CongViec congViec;
-    SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,37 +48,44 @@ public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity im
                 xuLyThemCongViec();
             }
         });
+        lvCongViec.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CongViec congViec = list.get(position);
+                Intent intent = new Intent(ManHinhHienThiDanhSachCongViecActivity.this,ManHinhChinhSuaCongViecActivity.class);
+                intent.putExtra(DatabaseHandler.COLUMN_ID,congViec.getId());
+                startActivity(intent);
+            }
+        });
         lvCongViec.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                deleteCongViec(list.get(position).getId());
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long id) {
+
+               final CongViec congViec = list.get(position);
+               AlertDialog.Builder builder = new AlertDialog.Builder(ManHinhHienThiDanhSachCongViecActivity.this);
+                builder.setTitle("Xóa công việc");
+                builder.setIcon(android.R.drawable.ic_delete);
+               builder.setMessage("Bạn có chắc xóa?");
+               builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                        db = new DatabaseHandler(getApplicationContext());
+                        db.deleteCongViec((int) id);
+                        list.remove(congViec);
+                        list.clear();
+                        adapterCongViec.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("Khong", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Khong lam gi ca
+                    }
+                });
+                builder.create().show();
                 return true;
             }
         });
-        lvCongViec.setOnItemClickListener(this);
-    }
-
-    private void deleteCongViec(final int id) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(android.R.drawable.ic_delete);
-        builder.setTitle("Xác nhận xóa");
-        builder.setMessage("Bạn có chắc chắn xóa không?");
-        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                DatabaseHandler db = new DatabaseHandler(ManHinhHienThiDanhSachCongViecActivity.this);
-                db.deleteCongViec(id);
-                refreshListCongViecData();
-            }
-        });
-        builder.setNegativeButton("Khong", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                //Khong lam gi het
-            }
-        });
-        builder.create().show();
     }
 
 
@@ -93,22 +101,5 @@ public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity im
                 R.layout.item, list);
         lvCongViec.setAdapter(adapterCongViec);
     }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        CongViec congViec = this.list.get(position);
-        Intent intent = new Intent(ManHinhHienThiDanhSachCongViecActivity.this, ManHinhChinhSuaCongViecActivity.class);
-        intent.putExtra(DatabaseHandler.COLUMN_ID, congViec.getId());
-        startActivity(intent);
-
-    }
-
-    public void refreshListCongViecData() {
-        DatabaseHandler db = new DatabaseHandler(this);
-        list.clear();
-        list.addAll(db.layDanhSachCongViec());
-        adapterCongViec.notifyDataSetChanged();
-    }
-
 }
 

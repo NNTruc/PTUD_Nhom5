@@ -31,6 +31,7 @@ public class ManHinhDangNhapActivity extends AppCompatActivity {
             {
                 Intent intent = new Intent(ManHinhDangNhapActivity.this,ManHinhHienThiDanhSachCongViecActivity.class);
                 startActivity(intent);
+                finish();
             }
             else {
                 Toast.makeText(ManHinhDangNhapActivity.this,"Lỗi sai tên đăng nhâp hoặc mật khẩu",Toast.LENGTH_LONG).show();

@@ -2,6 +2,7 @@ package vn.edu.android.quanlycongviec;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,7 +29,7 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
     Button btnXoa,btnCapnhatCongViec;
     Date dateFinish,timeFinish;
     Calendar cal;
-    CongViec congViec;
+    String mId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +40,24 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
         addControls();
         addEvents();
         getDefaultInfor();
-       // getData();
+
+        mId = getIntent().getStringExtra(DatabaseHandler.COLUMN_ID);
+        if (mId == null) {
+            getDefaultInfor();
+        } else {
+            DatabaseHandler db = new DatabaseHandler(this);
+            CongViec congViec = db.getCongViec(Integer.parseInt(mId));
+            if (congViec != null) {
+                txtTenCongViec.setText(congViec.getTenCongViec());
+                txtMota.setText(congViec.getMoTa());
+                txtNgayHT.setText(congViec.getNgayHT());
+                txtGioHT.setText(congViec.getGioHT());
+                txtTenCongViec.requestFocus();
+            }
+        }
     }
     private void addEvents() {
-        btnNgay.setOnClickListener(new View.OnClickListener() {
+       btnNgay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 XuLyHienThiNgay();
@@ -57,22 +72,48 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
         btnCapnhatCongViec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                xuLyCapNhatCongViec();
+                xuLyCapNhatCV();
+            }
+        });
+        btnXoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                xuLyXoaTrang();
             }
         });
     }
-    private void xuLyCapNhatCongViec() {
-        /*Intent intent = new Intent(ManHinhChinhSuaCongViecActivity.this, ManHinhHienThiDanhSachCongViecActivity.class);
-        int b = congViec.getId();
-        CongViec cv=new CongViec();
-        txtTenCongViec.setText(congViec.getTenCongViec());
-        txtMota.setText(congViec.getMoTa());
-        txtNgayHT.setText(congViec.getNgayHT());
-        txtGioHT.setText(congViec.getGioHT());
-        intent.putExtra("EDIT",cv);
-        setResult(200, intent);
-        db.themCongViec(cv);
-        finish();*/
+
+    private void xuLyXoaTrang() {
+        txtTenCongViec.setText("");
+        txtMota.setText("");
+        txtTenCongViec.requestFocus();
+    }
+
+   private void xuLyCapNhatCV() {
+        //Kiem tra rong thi khong cho thuc hien
+       String mId = txtTenCongViec.getText().toString().trim();
+        if (mId.length() == 0) {
+            txtTenCongViec.setError("?");
+            txtTenCongViec.requestFocus();
+            return;
+        }
+        String name = txtMota.getText().toString().trim();
+        if (name.length() == 0) {
+            txtMota.setError("?");
+            txtMota.requestFocus();
+            return;
+        }
+        CongViec congViec =new CongViec();
+        congViec.setTenCongViec(txtTenCongViec.getText().toString());
+        congViec.setMoTa(txtMota.getText().toString());
+        congViec.setNgayHT(getDateFormat(dateFinish));
+        congViec.setGioHT(getTimeFormat(timeFinish));
+
+        DatabaseHandler db = new DatabaseHandler(this);
+            db.updateCongViec(congViec);
+            Intent intent = new Intent(this,ManHinhHienThiDanhSachCongViecActivity.class);
+            startActivity(intent);
+            finish();
     }
 
     private void xuLyHienThiGio() {
@@ -154,17 +195,16 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
         timeFinish = cal.getTime();
     }
 
-    /*private void getData() {
-        if (getIntent().getExtras() != null) {
-            congViec= (CongViec) getIntent().getSerializableExtra("EDIT");
-            int a = congViec.getId();
-            txtTenCongViec.setText(congViec.getTenCongViec());
-            txtMota.setText(congViec.getMoTa());
-            txtNgayHT.setText(congViec.getNgayHT());
-            txtGioHT.setText(congViec.getGioHT());
-        }
+    private String getDateFormat(Date date) {
+        SimpleDateFormat dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return dft.format(date);
     }
-*/
+
+    private String getTimeFormat(Date date){
+       SimpleDateFormat dft = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return dft.format(date);
+    }
+
     private void addControls() {
         txtTenCongViec = (EditText) findViewById(R.id.txtTenCongViec);
         txtMota = (EditText) findViewById(R.id.txtMota);

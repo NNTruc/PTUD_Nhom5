@@ -78,7 +78,7 @@ public class ManHinhThemCongViecActivity extends AppCompatActivity {
     }
 
     private void xuLyLuuCongViec() {
-        //Kiem tra khong rong thi khong cho thuc hien
+        //Kiem tra rong thi khong cho thuc hien
         String mId = txtTenCongViec.getText().toString().trim();
         if (mId.length() == 0) {
             txtTenCongViec.setError("?");

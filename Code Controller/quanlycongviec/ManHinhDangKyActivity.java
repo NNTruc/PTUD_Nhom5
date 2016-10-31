@@ -42,6 +42,7 @@ public class ManHinhDangKyActivity extends AppCompatActivity {
                 databaseHelper.insertThongTin(thongTin);
                 Toast.makeText(ManHinhDangKyActivity.this,"Đăng ký thành công",Toast.LENGTH_LONG).show();
                 startActivity(intent);
+                finish();
             }
 
         }
