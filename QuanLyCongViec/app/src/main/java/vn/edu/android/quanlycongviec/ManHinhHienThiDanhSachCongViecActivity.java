@@ -19,10 +19,6 @@ import vn.edu.android.model.CongViec;
 
 public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity {
 
-    public static final long NEW_NOTE = -1;
-    public static final String ID = "ID";
-    private CongViec cv;
-
     ListView lvCongViec;
     List<CongViec> list;
     CongViecAdapter adapterCongViec;
@@ -53,7 +49,7 @@ public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CongViec congViec = list.get(position);
                 Intent intent = new Intent(ManHinhHienThiDanhSachCongViecActivity.this,ManHinhChinhSuaCongViecActivity.class);
-                intent.putExtra(DatabaseHandler.COLUMN_ID,congViec.getId());
+                intent.putExtra(DatabaseHandler.COLUMN_TITLE,congViec.getTenCongViec());
                 startActivity(intent);
             }
         });
@@ -70,9 +66,8 @@ public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
                         db = new DatabaseHandler(getApplicationContext());
-                        db.deleteCongViec((int) id);
+                        db.deleteCongViec(congViec);
                         list.remove(congViec);
-                        list.clear();
                         adapterCongViec.notifyDataSetChanged();
                     }
                 });
@@ -87,7 +82,6 @@ public class ManHinhHienThiDanhSachCongViecActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void xuLyThemCongViec() {
         Intent intent = new Intent(ManHinhHienThiDanhSachCongViecActivity.this, ManHinhThemCongViecActivity.class);

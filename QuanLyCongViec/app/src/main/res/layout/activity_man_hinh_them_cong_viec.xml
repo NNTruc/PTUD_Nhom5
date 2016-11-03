@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/txtNgayHT"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textColor="#fb0303" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -67,7 +68,8 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/txtGioHT"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:textColor="#fb0303" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -88,13 +90,15 @@
             android:layout_height="wrap_content"
             android:text="Xóa Trắng"
             android:id="@+id/btnXoaTrang"
-            android:layout_weight="0.15" />
+            android:layout_weight="0.15"
+            android:textStyle="bold" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lưu Công Việc"
             android:id="@+id/btnLuuCV"
-            android:layout_weight="0.81" />
+            android:layout_weight="0.81"
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

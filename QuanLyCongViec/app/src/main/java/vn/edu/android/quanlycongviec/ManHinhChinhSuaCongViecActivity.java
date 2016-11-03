@@ -41,12 +41,12 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
         addEvents();
         getDefaultInfor();
 
-        mId = getIntent().getStringExtra(DatabaseHandler.COLUMN_ID);
+        mId = getIntent().getStringExtra(DatabaseHandler.COLUMN_TITLE);
         if (mId == null) {
             getDefaultInfor();
         } else {
             DatabaseHandler db = new DatabaseHandler(this);
-            CongViec congViec = db.getCongViec(Integer.parseInt(mId));
+            CongViec congViec = db.getCongViec(mId);
             if (congViec != null) {
                 txtTenCongViec.setText(congViec.getTenCongViec());
                 txtMota.setText(congViec.getMoTa());
@@ -56,6 +56,7 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
             }
         }
     }
+
     private void addEvents() {
        btnNgay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,9 +88,10 @@ public class ManHinhChinhSuaCongViecActivity extends AppCompatActivity {
         txtTenCongViec.setText("");
         txtMota.setText("");
         txtTenCongViec.requestFocus();
+        getDefaultInfor();
     }
 
-   private void xuLyCapNhatCV() {
+    private void xuLyCapNhatCV() {
         //Kiem tra rong thi khong cho thuc hien
        String mId = txtTenCongViec.getText().toString().trim();
         if (mId.length() == 0) {

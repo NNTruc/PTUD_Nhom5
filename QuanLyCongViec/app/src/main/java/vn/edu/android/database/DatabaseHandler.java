@@ -32,6 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     public List<CongViec> layDanhSachCongViec() {
         List<CongViec> list = new ArrayList<CongViec>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -63,18 +64,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         layDanhSachCongViec();
     }
 
-    public CongViec getCongViec(int rowID) {
+    public CongViec getCongViec(String title) {
         CongViec congViec;
         SQLiteDatabase db = this.getReadableDatabase();
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE "
-                + COLUMN_ID + " = " + "'"+ rowID + "'";
+                + COLUMN_TITLE + " = " + "'"+ title + "'";
         Cursor c = db.rawQuery(sql,null);
         if(c.moveToFirst()){
+            int id=c.getInt(c.getColumnIndex(COLUMN_ID));
             String tieude = c.getString(c.getColumnIndex(COLUMN_TITLE));
             String mota = c.getString(c.getColumnIndex(COLUMN_DESCRIPTION));
             String ngayHT=c.getString(c.getColumnIndex(COLUMN_DATE));
             String gioHT=c.getString(c.getColumnIndex(COLUMN_HOUR));
-            congViec = new CongViec(rowID,tieude,mota,ngayHT,gioHT);
+            congViec = new CongViec(id,tieude,mota,ngayHT,gioHT);
         }else
             congViec = null;
         c.close();
@@ -89,13 +91,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         row.put(COLUMN_DESCRIPTION,congViec.getMoTa());
         row.put(COLUMN_DATE,congViec.getNgayHT());
         row.put(COLUMN_HOUR,congViec.getGioHT());
-        db.update(TABLE_NAME,row,COLUMN_ID + " = ? ",new String[]{String.valueOf(congViec.getId())});
+        db.update(TABLE_NAME,row,COLUMN_TITLE + " = ? ",new String[]{congViec.getTenCongViec()});
         close();
     }
 
-    public void deleteCongViec(int rowID){
+    public void deleteCongViec(CongViec cv){
         open();
-        db.delete(TABLE_NAME,COLUMN_ID + " = ?",new String[]{String.valueOf(rowID)});
+       // db.delete(TABLE_NAME,COLUMN_ID + " = ?",new String[]{String.valueOf(rowID)});
+       // String sql = "delete from "+TABLE_NAME+" where "+COLUMN_TITLE+"= '"+cv.getTenCongViec()+"'";
+        db.delete(TABLE_NAME,COLUMN_TITLE + " = ? ",new String[]{cv.getTenCongViec()});
+       // db.execSQL(sql);
         close();
     }
 
